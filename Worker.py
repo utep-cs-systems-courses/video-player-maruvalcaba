@@ -94,6 +94,7 @@ class Grayscale(Thread):
                 full2.release()
                 break
             grayscaleFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            print(f'Converting to grayscale {count}')
             empty2.acquire()
             buffLock2.acquire()
             buff2.append(grayscaleFrame)
@@ -104,6 +105,7 @@ class Grayscale(Thread):
             # before displaying the next frame
 
             count += 1
+        print('Grayscale conversion complete')
 
         
 class Display(Thread):
