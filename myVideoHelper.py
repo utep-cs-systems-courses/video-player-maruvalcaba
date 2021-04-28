@@ -32,11 +32,13 @@ class Queue:
         self.lock.release()
         self.empty.release()
         return i
-
+    
+# extraction and conversion queue
 extract_convert = Queue()
+# conversion and display queue
 convert_display = Queue()
     
-def extractFrames(filename):
+def extractFrames(filename, maxFrames):
     global extract_convert
     # Initialize frame count 
     count = 0
@@ -44,7 +46,7 @@ def extractFrames(filename):
     vidcap = cv2.VideoCapture(filename)
     # read first image
     success,image = vidcap.read()
-    while success and count < 72:
+    while success and count < maxFrames:
         # add the frame to the buffer
         extract_convert.insert(image)
         success,image = vidcap.read()
@@ -68,18 +70,11 @@ def convertFrames():
         grayscaleFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         print(f'Converting to grayscale {count}')
         convert_display.insert(grayscaleFrame)
-
-        # display the image in a window called "video" and wait 42ms
-        # before displaying the next frame
-        
         count += 1
     print('Grayscale conversion complete')
 
 def displayFrames():
-    global buff2
-    global buffLock2
-    global empty2
-    global full2
+    global convert_display
     # initialize frame count
     count = 0
     # go through each frame in the buffer until the buffer is empty
@@ -90,11 +85,9 @@ def displayFrames():
             break
         print(f'Displaying frame {count}')        
         # display the image in a window called "video" and wait 42ms
-        # before displaying the next frame
         cv2.imshow('Video', frame)
         if cv2.waitKey(42) and 0xFF == ord("q"):
             break
         count += 1
     print('Finished displaying all frames')
-    # cleanup the windows
     cv2.destroyAllWindows()

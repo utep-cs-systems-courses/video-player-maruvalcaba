@@ -11,13 +11,14 @@ from threading import *
 threadNum = 0
 
 class Extractor(Thread):
-    def __init__(self, filename):
+    def __init__(self, filename, maxFrames):
         global threadNum
         Thread.__init__(self, name="Thread-%d" % threadNum);
         threadNum += 1
         self.filename = filename
+        self.maxFrames = maxFrames
     def run(self):
-        myVideoHelper.extractFrames(self.filename)
+        myVideoHelper.extractFrames(self.filename, self.maxFrames)
 
 class Grayscale(Thread):
     def __init__(self):
@@ -35,6 +36,11 @@ class Display(Thread):
     def run(self):
         myVideoHelper.displayFrames()
 
-Extractor('clip.mp4').start()
-Grayscale().start()
-Display().start()
+if __name__ == "__main__":
+    
+    # Thread to extract the frames
+    Extractor('clip.mp4', 72).start()
+    # Thread to convert the frames
+    Grayscale().start()
+    # Thread to display the frames
+    Display().start()
