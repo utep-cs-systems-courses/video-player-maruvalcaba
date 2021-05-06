@@ -13,7 +13,7 @@ from threading import *
 
 class Queue:
     def __init__(self):
-        self.buff = list()
+        self.buff = []
         self.lock = Lock()
         self.empty = Semaphore(10)
         self.full = Semaphore(0)
